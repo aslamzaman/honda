@@ -4,6 +4,9 @@ import Add from "@/components/hondahistory/Add";
 import { fetchDataFromAPI, formatedDateDot } from "@/lib/utils";
 import { jsPDF } from "jspdf";
 import html2canvas from 'html2canvas';
+import { Tiro_Bangla } from 'next/font/google';
+const tiro = Tiro_Bangla({ subsets: ['bengali'], weight: "400" });
+
 
 
 const Hondahistory = () => {
@@ -20,7 +23,7 @@ const Hondahistory = () => {
     const getData = async () => {
       setWaitMsg('Please Wait...');
       try {
-        const data = await fetchDataFromAPI("hondahistory"); 
+        const data = await fetchDataFromAPI("hondahistory");
         setHondahistorys(data);
         setWaitMsg('');
       } catch (error) {
@@ -32,24 +35,28 @@ const Hondahistory = () => {
 
     const load = async () => {
       setWaitMsg("Please wait...");
-      const doc = new jsPDF({
-        orientation: 'p',
-        unit: 'mm',
-        format: 'a4',
-        putOnlyUsedFonts: true
-      });
+      try {
+        const doc = new jsPDF({
+          orientation: 'p',
+          unit: 'mm',
+          format: 'a4',
+          putOnlyUsedFonts: true
+        });
 
-      const canvas = await html2canvas(pageRef.current, {
-        scale: 4,
-        useCORS: true
-      })
-      const url = canvas.toDataURL("images/png", 1.0);
-      console.log(url);
-      doc.addImage(url, "PNG", 0, 0, 210, 297);
+        const canvas = await html2canvas(pageRef.current, {
+          scale: 4,
+          useCORS: true
+        })
+        const url = canvas.toDataURL("images/png", 1.0);
+       // console.log(url);
+        doc.addImage(url, "PNG", 0, 0, 210, 297);
 
-      doc.save("test.pdf");
-      setPrint(false);
-      setWaitMsg("");
+        doc.save("honda_inforamtion.pdf");
+        setPrint(false);
+        setWaitMsg("");
+      } catch (err) {
+        console.log(err);
+      }
     }
     if (print) { load() };
 
@@ -118,13 +125,13 @@ const Hondahistory = () => {
                 hondahistorys.map(hondahistory => (
                   <tr className="border-b border-gray-200 hover:bg-gray-100" key={hondahistory._id}>
                     <td className="text-center py-1 px-4">{formatedDateDot(hondahistory.dt, true)}</td>
-                    <td className="text-center py-1 px-4">{hondahistory.name}<br />
+                    <td className="text-center py-1 px-4"><span className="font-bold">{hondahistory.name}</span><br />
                       {hondahistory.post}<br />
                       {hondahistory.mobile}<br />
                       {hondahistory.unit}<br />
                       {hondahistory.project}
                     </td>
-                    <td className="text-center py-1 px-4">{hondahistory.hondaId.regNo}<br />
+                    <td className="text-center py-1 px-4"><span className="font-bold">{hondahistory.hondaId.regNo}</span><br />
                       Registration: {hondahistory.regCertificate}<br />
                       Helmet: {hondahistory.helmet}<br />
                       Tax Certificate: {hondahistory.taxCertificate}<br />
@@ -150,8 +157,8 @@ const Hondahistory = () => {
         </div>
       </div>
 
-      <div className="w-[1px] h-[1px] overflow-auto">
-        <div ref={pageRef} className="w-[595px] h-[842px] px-[52px] py-[70px] mx-auto text-sm border border-black">
+      <div className={`w-[1px] h-[1px] overflow-auto ${tiro.className}`}>
+        <div ref={pageRef} className="w-[595px] h-[842px] px-[52px] py-[70px] mx-auto text-[13px] border border-black">
           <div className="w-full">
             <h1 className="text-lg text-center font-semibold">Honda Received Acknowledgement</h1>
             <p className="w-full text-center">Date: {formatedDateDot(new Date(), true)}</p>
