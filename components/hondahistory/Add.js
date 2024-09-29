@@ -120,11 +120,11 @@ const Add = ({ message }) => {
                                             <TextDt Title="Date" Id="dt" Change={e => setDt(e.target.value)} Value={dt} />
                                             <TextEn Title="Name" Id="name" Change={e => setName(e.target.value)} Value={name} Chr={50} />
                                             <TextEn Title="Mobile" Id="mobile" Change={e => setMobile(e.target.value)} Value={mobile} Chr={50} />
-                                            <TextEn Title="Post" Id="post" Change={e => setPost(e.target.value)} Value={post} Chr={50} />
-                                            <TextEn Title="Unit" Id="unit" Change={e => setUnit(e.target.value)} Value={unit} Chr={50} />
-                                            <TextEn Title="Project" Id="project" Change={e => setProject(e.target.value)} Value={project} Chr={50} />
+                                            <TextEn Title="Designation (Post)" Id="post" Change={e => setPost(e.target.value)} Value={post} Chr={50} />
+                                            <TextEn Title="Unit Name" Id="unit" Change={e => setUnit(e.target.value)} Value={unit} Chr={50} />
+                                            <TextEn Title="Project Name" Id="project" Change={e => setProject(e.target.value)} Value={project} Chr={50} />
 
-                                            <DropdownEn Title="Honda" Id="hondaId" Change={e => setHondaId(e.target.value)} Value={hondaId}>
+                                            <DropdownEn Title="Honda Registration No." Id="hondaId" Change={e => setHondaId(e.target.value)} Value={hondaId}>
                                                 {hondas.length ? hondas.map(honda => <option value={honda._id} key={honda._id}>{honda.regNo}</option>) : null}
                                             </DropdownEn>
 
