@@ -20,6 +20,27 @@ const Hondahistory = () => {
   const pageRef = useRef();
 
   useEffect(() => {
+
+  setData({
+      dt: "2024-09-29",
+      name: "name",
+      mobile: "mobile",
+      post: "post",
+      unit: "unit",
+      project: "project",
+      regNo: "regNo",
+      regDt: "2024-09-29",
+      chassisNo: "chassisNo",
+      engineNo: "engineNo",
+      regCertificate: "regCertificate",
+      helmet:"helmet",
+      taxCertificate: "taxCertificate",
+      insurance: "insurance",
+      remarks: "remarks"
+    });
+
+
+
     const getData = async () => {
       setWaitMsg('Please Wait...');
       try {
@@ -67,6 +88,8 @@ const Hondahistory = () => {
   const messageHandler = (data) => {
     setMsg(data);
   }
+
+
 
 
   const printHandler = (id) => {
