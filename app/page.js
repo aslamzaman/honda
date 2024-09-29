@@ -69,7 +69,6 @@ const Hondahistory = () => {
           useCORS: true
         })
         const url = canvas.toDataURL("images/png", 1.0);
-        // console.log(url);
         doc.addImage(url, "PNG", 0, 0, 210, 297);
         doc.save("honda_inforamtion.pdf");
 
