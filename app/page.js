@@ -71,9 +71,7 @@ const Hondahistory = () => {
         const url = canvas.toDataURL("images/png", 1.0);
         // console.log(url);
         doc.addImage(url, "PNG", 0, 0, 210, 297);
-        window.open(doc.output('bloburl'), '_blank');
-
-        // doc.save("honda_inforamtion.pdf");
+        doc.save("honda_inforamtion.pdf");
 
         setPrint(false);
         setWaitMsg("");
