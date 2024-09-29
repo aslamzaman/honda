@@ -21,7 +21,7 @@ const Hondahistory = () => {
 
   useEffect(() => {
 
-  setData({
+    setData({
       dt: "2024-09-29",
       name: "name",
       mobile: "mobile",
@@ -33,7 +33,7 @@ const Hondahistory = () => {
       chassisNo: "chassisNo",
       engineNo: "engineNo",
       regCertificate: "regCertificate",
-      helmet:"helmet",
+      helmet: "helmet",
       taxCertificate: "taxCertificate",
       insurance: "insurance",
       remarks: "remarks"
@@ -69,10 +69,12 @@ const Hondahistory = () => {
           useCORS: true
         })
         const url = canvas.toDataURL("images/png", 1.0);
-       // console.log(url);
+        // console.log(url);
         doc.addImage(url, "PNG", 0, 0, 210, 297);
+        window.open(doc.output('bloburl'), '_blank');
 
-        doc.save("honda_inforamtion.pdf");
+        // doc.save("honda_inforamtion.pdf");
+
         setPrint(false);
         setWaitMsg("");
       } catch (err) {
@@ -131,6 +133,7 @@ const Hondahistory = () => {
           <table className="w-full border border-gray-200">
             <thead>
               <tr className="w-full bg-gray-200">
+                <th className="text-center border-b border-gray-200 px-4 py-1">SL</th>
                 <th className="text-center border-b border-gray-200 px-4 py-1">Date</th>
                 <th className="text-center border-b border-gray-200 px-4 py-1">Name</th>
                 <th className="text-center border-b border-gray-200 px-4 py-1">Honda</th>
@@ -145,8 +148,9 @@ const Hondahistory = () => {
             </thead>
             <tbody>
               {hondahistorys.length ? (
-                hondahistorys.map(hondahistory => (
+                hondahistorys.map((hondahistory, i) => (
                   <tr className="border-b border-gray-200 hover:bg-gray-100" key={hondahistory._id}>
+                    <td className="text-center py-1 px-4">{i + 1}.</td>
                     <td className="text-center py-1 px-4">{formatedDateDot(hondahistory.dt, true)}</td>
                     <td className="text-center py-1 px-4"><span className="font-bold">{hondahistory.name}</span><br />
                       {hondahistory.post}<br />
