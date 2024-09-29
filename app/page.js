@@ -44,8 +44,17 @@ const Hondahistory = () => {
     const getData = async () => {
       setWaitMsg('Please Wait...');
       try {
-        const data = await fetchDataFromAPI("hondahistory");
-        setHondahistorys(data);
+        const fetch = await fetchDataFromAPI("hondahistory");
+        const data = fetch.sort((a, b) => a._id < b._id ? -1 : 1);
+        const withSl = data.map((honda, i) => {
+          return {
+            ...honda,
+            sl: i + 1
+          }
+        })
+        const sortResult = withSl.sort((a, b) => parseInt(a.sl) < parseInt(b.sl) ? 1 : -1);
+        console.log(sortResult);
+        setHondahistorys(sortResult);
         setWaitMsg('');
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -145,9 +154,9 @@ const Hondahistory = () => {
             </thead>
             <tbody>
               {hondahistorys.length ? (
-                hondahistorys.map((hondahistory, i) => (
+                hondahistorys.map(hondahistory => (
                   <tr className="border-b border-gray-200 hover:bg-gray-100" key={hondahistory._id}>
-                    <td className="text-center py-1 px-4">{i + 1}.</td>
+                    <td className="text-center py-1 px-4">{hondahistory.sl}.</td>
                     <td className="text-center py-1 px-4">{formatedDateDot(hondahistory.dt, true)}</td>
                     <td className="text-center py-1 px-4"><span className="font-bold">{hondahistory.name}</span><br />
                       {hondahistory.post}<br />
