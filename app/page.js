@@ -21,6 +21,7 @@ const Hondahistory = () => {
 
   useEffect(() => {
 
+
     setData({
       dt: "2024-09-29",
       name: "name",
@@ -47,7 +48,6 @@ const Hondahistory = () => {
 
         const hId = ['661e40f59a7eb1dabf9ed011', '661faac22ca6f3dec32cce1a', '661f6b3a3e4c0a8b4a96d054', '661e40f59a7eb1dabf9ed006', '661e40f59a7eb1dabf9ecffa'];
        const x = fetch.filter(data=>!hId.includes(data.hondaId._id));
-       // console.log(x);
 
         const data = x.sort((a, b) => a._id < b._id ? -1 : 1);
         const withSl = data.map((honda, i) => {
@@ -67,6 +67,7 @@ const Hondahistory = () => {
     getData();
 
 
+    
     const load = async () => {
       setWaitMsg("Please wait...");
       try {
