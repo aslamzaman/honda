@@ -1,12 +1,13 @@
 "use client";
 import React, { useState, useEffect, useRef } from "react";
-import Add from "@/components/hondahistory/Add";
-import { fetchDataFromAPI, formatedDateDot } from "@/lib/utils";
+
+import { formatedDateDot, sortArray } from "@/lib/utils";
 import { jsPDF } from "jspdf";
 import html2canvas from 'html2canvas';
 import { Tiro_Bangla } from 'next/font/google';
 const tiro = Tiro_Bangla({ subsets: ['bengali'], weight: "400" });
-
+import { getDataFromFirebase } from "@/lib/firebaseFunction";
+import Edit from "@/components/hondahistory/Edit";
 
 
 const Hondahistory = () => {
@@ -17,11 +18,14 @@ const Hondahistory = () => {
   const [data, setData] = useState({});
   const [print, setPrint] = useState(false);
 
+
+
+
   const pageRef = useRef();
 
   useEffect(() => {
 
-
+    // initial data ------
     setData({
       dt: "2024-09-29",
       name: "name",
@@ -44,21 +48,23 @@ const Hondahistory = () => {
     const getData = async () => {
       setWaitMsg('Please Wait...');
       try {
-        const fetch = await fetchDataFromAPI("hondahistory");
+        const [histories, hondas] = await Promise.all([
+          getDataFromFirebase("hondahistory"),
+          getDataFromFirebase("honda")
+        ]);
 
-        const hId = ['661e40f59a7eb1dabf9ed011', '661faac22ca6f3dec32cce1a', '661f6b3a3e4c0a8b4a96d054', '661e40f59a7eb1dabf9ed006', '661e40f59a7eb1dabf9ecffa'];
-       const x = fetch.filter(data=>!hId.includes(data.hondaId._id));
-
-        const data = x.sort((a, b) => a._id < b._id ? -1 : 1);
-        const withSl = data.map((honda, i) => {
+        const joinCollection = histories.map(hondahistory => {
           return {
-            ...honda,
-            sl: i + 1
+            ...hondahistory,
+            honda: hondas.find(honda => honda.id === hondahistory.hondaId) || {}
           }
         })
-        const sortResult = withSl.sort((a, b) => parseInt(a.sl) < parseInt(b.sl) ? 1 : -1);
-        console.log(sortResult);
-        setHondahistorys(sortResult);
+
+        const sortCollection = joinCollection.sort((a, b) => sortArray(new Date(a.createdAt), new Date(b.createdAt)));
+
+       // console.log(sortCollection);
+        setHondahistorys(sortCollection);
+
         setWaitMsg('');
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -67,7 +73,7 @@ const Hondahistory = () => {
     getData();
 
 
-    
+
     const load = async () => {
       setWaitMsg("Please wait...");
       try {
@@ -103,11 +109,9 @@ const Hondahistory = () => {
   }
 
 
-
-
   const printHandler = (id) => {
-    const honda = hondahistorys.find(h => h._id === id);
-
+    const honda = hondahistorys.find(honda => honda.id === id);
+ 
     const normalize = {
       dt: honda.dt,
       name: honda.name,
@@ -127,8 +131,8 @@ const Hondahistory = () => {
     }
     setData(normalize);
     setPrint(true);
+   
   }
-
 
 
   return (
@@ -138,6 +142,7 @@ const Hondahistory = () => {
         <p className="w-full text-center text-blue-300">&nbsp;{waitMsg}&nbsp;</p>
         <p className="w-full text-sm text-center text-pink-600">&nbsp;{msg}&nbsp;</p>
       </div>
+
       <div className="px-4 lg:px-6">
         <div className="p-4 overflow-auto">
 
@@ -151,17 +156,17 @@ const Hondahistory = () => {
                 <th className="text-center border-b border-gray-200 px-4 py-1">Remarks</th>
                 <th className="w-[95px] border-b border-gray-200 px-4 py-2">
                   <div className="w-[90px] h-[45px] flex justify-end space-x-2 p-1 font-normal">
-                    {/* <Print data={hondahistorys} /> */}
-                    <Add message={messageHandler} />
+
+
                   </div>
                 </th>
               </tr>
             </thead>
             <tbody>
               {hondahistorys.length ? (
-                hondahistorys.map(hondahistory => (
-                  <tr className="border-b border-gray-200 hover:bg-gray-100" key={hondahistory._id}>
-                    <td className="text-center py-1 px-4">{hondahistory.sl}.</td>
+                hondahistorys.map((hondahistory, i) => (
+                  <tr className="border-b border-gray-200 hover:bg-gray-100" key={hondahistory.id}>
+                    <td className="text-center py-1 px-4">{i + 1}.</td>
                     <td className="text-center py-1 px-4">{formatedDateDot(hondahistory.dt, true)}</td>
                     <td className="text-center py-1 px-4"><span className="font-bold">{hondahistory.name}</span><br />
                       {hondahistory.post}<br />
@@ -178,7 +183,10 @@ const Hondahistory = () => {
                     <td className="text-center py-1 px-4">{hondahistory.remarks}</td>
                     <td className="text-center py-2">
                       <div className="h-8 flex justify-end items-center space-x-1 mt-1 mr-2">
-                        <button onClick={() => printHandler(hondahistory._id)} className="px-4 py-1 border border-blue-300 rounded-full bg-gray-200 hover:bg-white">Print</button>
+                        <div className={`${hondahistory.isEditable ? 'block' : 'hidden'}`}>
+                          <Edit message={messageHandler} id={hondahistory.id} data={hondahistory} />
+                        </div>
+                        <button onClick={() => printHandler(hondahistory.id)} className="px-4 py-1 border border-blue-300 rounded-full bg-gray-200 hover:bg-white">Print</button>
                       </div>
                     </td>
                   </tr>
@@ -196,7 +204,7 @@ const Hondahistory = () => {
       </div>
 
       <div className={`w-[1px] h-[1px] overflow-auto ${tiro.className}`}>
-        <div ref={pageRef} className="w-[595px] h-[842px] px-[52px] py-[70px] mx-auto text-[13px] border border-black">
+        <div ref={pageRef} className="w-[595px] h-[842px] px-[52px] py-[70px] mx-auto text-[12px] border border-black">
           <div className="w-full">
             <h1 className="text-lg text-center font-semibold">Honda Received Acknowledgement</h1>
             <p className="w-full text-center">Date: {formatedDateDot(new Date(), true)}</p>
@@ -210,7 +218,7 @@ const Hondahistory = () => {
             </p>
 
 
-            <p className="w-full text-center mt-5">
+            <p className="w-full text-center mt-10">
               <span className="font-bold">Documents and Others</span><br />
               Registration Certificate: {data.regCertificate}<br />
               Helmet: {data.helmet}<br />

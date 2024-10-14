@@ -9,12 +9,14 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "firebase": "^10.14.1",
     "html2canvas": "^1.4.1",
     "jspdf": "^2.5.2",
     "mongoose": "^8.6.4",
     "next": "14.2.13",
     "react": "^18",
-    "react-dom": "^18"
+    "react-dom": "^18",
+    "redis": "^4.7.0"
   },
   "devDependencies": {
     "eslint": "^8",
