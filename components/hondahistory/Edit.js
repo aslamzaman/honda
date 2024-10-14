@@ -70,7 +70,7 @@ const Edit = ({ message, id, data }) => {
             insurance: insurance,
             remarks: remarks,
             createdAt: createdAt,
-            isEditable: false
+            isEditable: 'no'
         }
     }
 

@@ -77,7 +77,8 @@ const Add = ({ message }) => {
             helmet: helmet,
             taxCertificate: taxCertificate,
             insurance: insurance,
-            remarks: remarks
+            remarks: remarks,
+			isEditable: 'no'
         }
     }
 

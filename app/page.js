@@ -183,7 +183,7 @@ const Hondahistory = () => {
                     <td className="text-center py-1 px-4">{hondahistory.remarks}</td>
                     <td className="text-center py-2">
                       <div className="h-8 flex justify-end items-center space-x-1 mt-1 mr-2">
-                        <div className={`${hondahistory.isEditable ? 'block' : 'hidden'}`}>
+                        <div className={`${hondahistory.isEditable === 'yes' ? 'block' : 'hidden'}`}>
                           <Edit message={messageHandler} id={hondahistory.id} data={hondahistory} />
                         </div>
                         <button onClick={() => printHandler(hondahistory.id)} className="px-4 py-1 border border-blue-300 rounded-full bg-gray-200 hover:bg-white">Print</button>
