@@ -18,10 +18,9 @@ const Hondahistory = () => {
   const [data, setData] = useState({});
   const [print, setPrint] = useState(false);
 
-
-
-
   const pageRef = useRef();
+  
+  
 
   useEffect(() => {
 
@@ -134,6 +133,11 @@ const Hondahistory = () => {
    
   }
 
+    const refreshHistoryHandler = () => {
+        localStorage.removeItem('hondahistory');
+        setMsg(`Refresh time: ${new Date().toISOString()}`);
+    }
+
 
   return (
     <>
@@ -144,8 +148,10 @@ const Hondahistory = () => {
       </div>
 
       <div className="px-4 lg:px-6">
+	    <div className="w-full px-4 flex justify-end">
+            <button onClick={refreshHistoryHandler} className="px-3 text-gray-300">Refresh</button>
+        </div>
         <div className="p-4 overflow-auto">
-
           <table className="w-full border border-gray-200">
             <thead>
               <tr className="w-full bg-gray-200">
