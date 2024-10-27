@@ -64,7 +64,7 @@ const Hondahistory = () => {
        // console.log(sortCollection);
         setHondahistorys(sortCollection);
 
-        setWaitMsg('');
+        setWaitMsg(`Total Honda: ${sortCollection.length}`);
       } catch (error) {
         console.error("Error fetching data:", error);
       }
@@ -110,7 +110,7 @@ const Hondahistory = () => {
 
   const printHandler = (id) => {
     const honda = hondahistorys.find(honda => honda.id === id);
- 
+    console.log(honda);
     const normalize = {
       dt: honda.dt,
       name: honda.name,
@@ -118,16 +118,17 @@ const Hondahistory = () => {
       post: honda.post,
       unit: honda.unit,
       project: honda.project,
-      regNo: honda.hondaId.regNo,
-      regDt: honda.hondaId.regDt,
-      chassisNo: honda.hondaId.chassisNo,
-      engineNo: honda.hondaId.engineNo,
+      regNo: honda.honda.regNo,
+      regDt: honda.honda.regDt,
+      chassisNo: honda.honda.chassisNo,
+      engineNo: honda.honda.engineNo,
       regCertificate: honda.regCertificate,
       helmet: honda.helmet,
       taxCertificate: honda.taxCertificate,
       insurance: honda.insurance,
       remarks: honda.remarks
     }
+    console.log(normalize);
     setData(normalize);
     setPrint(true);
    
