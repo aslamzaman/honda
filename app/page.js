@@ -19,8 +19,8 @@ const Hondahistory = () => {
   const [print, setPrint] = useState(false);
 
   const pageRef = useRef();
-  
-  
+
+
 
   useEffect(() => {
 
@@ -47,21 +47,26 @@ const Hondahistory = () => {
     const getData = async () => {
       setWaitMsg('Please Wait...');
       try {
-        const [histories, hondas] = await Promise.all([
+        const [histories, hondas, units] = await Promise.all([
           getDataFromFirebase("hondahistory"),
-          getDataFromFirebase("honda")
+          getDataFromFirebase("honda"),
+          getDataFromFirebase("unit")
         ]);
+        console.log(units)
 
         const joinCollection = histories.map(hondahistory => {
+          const matchHonda = hondas.find(honda => honda.id === hondahistory.hondaId) || {};
+          const matchUnit = units.find(unit => unit.id === matchHonda.unitId) || {};
           return {
             ...hondahistory,
-            honda: hondas.find(honda => honda.id === hondahistory.hondaId) || {}
+            honda: matchHonda,
+            unitOriginal: matchUnit.nmEn
           }
         })
 
         const sortCollection = joinCollection.sort((a, b) => sortArray(new Date(a.createdAt), new Date(b.createdAt)));
 
-       // console.log(sortCollection);
+        console.log(sortCollection);
         setHondahistorys(sortCollection);
 
         setWaitMsg(`Total Honda: ${sortCollection.length}`);
@@ -131,13 +136,13 @@ const Hondahistory = () => {
     console.log(normalize);
     setData(normalize);
     setPrint(true);
-   
+
   }
 
-    const refreshHistoryHandler = () => {
-        localStorage.removeItem('hondahistory');
-        setMsg(`Refresh time: ${new Date().toISOString()}`);
-    }
+  const refreshHistoryHandler = () => {
+    localStorage.removeItem('hondahistory');
+    setMsg(`Refresh time: ${new Date().toISOString()}`);
+  }
 
 
   return (
@@ -149,8 +154,8 @@ const Hondahistory = () => {
       </div>
 
       <div className="px-4 lg:px-6">
-	    <div className="w-full px-4 flex justify-end">
-            <button onClick={refreshHistoryHandler} className="px-3 text-gray-300">Refresh</button>
+        <div className="w-full px-4 flex justify-end">
+          <button onClick={refreshHistoryHandler} className="px-3 text-gray-300">Refresh</button>
         </div>
         <div className="p-4 overflow-auto">
           <table className="w-full border border-gray-200">
@@ -159,8 +164,13 @@ const Hondahistory = () => {
                 <th className="text-center border-b border-gray-200 px-4 py-1">SL</th>
                 <th className="text-center border-b border-gray-200 px-4 py-1">Date</th>
                 <th className="text-center border-b border-gray-200 px-4 py-1">Name</th>
+                <th className="text-center border-b border-gray-200 px-4 py-1">Documents</th>
                 <th className="text-center border-b border-gray-200 px-4 py-1">Honda</th>
-                <th className="text-center border-b border-gray-200 px-4 py-1">Remarks</th>
+                <th className="text-center border-b border-gray-200 px-4 py-1">
+                  <div className="max-w-[400px]">
+                    Remarks
+                  </div>
+                </th>
                 <th className="w-[95px] border-b border-gray-200 px-4 py-2">
                   <div className="w-[90px] h-[45px] flex justify-end space-x-2 p-1 font-normal">
 
@@ -181,13 +191,18 @@ const Hondahistory = () => {
                       {hondahistory.unit}<br />
                       {hondahistory.project}
                     </td>
-                    <td className="text-center py-1 px-4"><span className="font-bold">{hondahistory.hondaId.regNo}</span><br />
+                    <td className="text-center py-1 px-4">
                       Registration: {hondahistory.regCertificate}<br />
                       Helmet: {hondahistory.helmet}<br />
                       Tax Certificate: {hondahistory.taxCertificate}<br />
                       Insurance: {hondahistory.insurance}
                     </td>
-                    <td className="text-center py-1 px-4">{hondahistory.remarks}</td>
+                    <td className="text-center py-1 px-4">{hondahistory.honda.regNo}<br />{hondahistory.unitOriginal}</td>
+                    <td className="text-center py-1 px-4">
+                      <div className="max-w-[400px]">
+                        {hondahistory.remarks}
+                      </div>
+                    </td>
                     <td className="text-center py-2">
                       <div className="h-8 flex justify-end items-center space-x-1 mt-1 mr-2">
                         <div className={`${hondahistory.isEditable === 'yes' ? 'block' : 'hidden'}`}>
