@@ -148,7 +148,7 @@ const Hondahistory = () => {
   return (
     <>
       <div className="w-full mb-3 mt-8">
-        <h1 className="w-full text-xl lg:text-3xl font-bold text-center text-blue-700">Hond Information</h1>
+        <h1 className="w-full text-xl lg:text-3xl font-bold text-center text-blue-700">Honda Informations</h1>
         <p className="w-full text-center text-blue-300">&nbsp;{waitMsg}&nbsp;</p>
         <p className="w-full text-sm text-center text-pink-600">&nbsp;{msg}&nbsp;</p>
       </div>
